@@ -8,6 +8,6 @@
     <link rel="stylesheet" href="{{ asset('assets/admin/css/style1.css') }}">
 </head>
 <body>
-    <h1>Welcome {{ $name }} to my website!</h1>
+    <h1> {{ $name }}!</h1>
 </body>
 </html>

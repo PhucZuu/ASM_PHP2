@@ -7,7 +7,7 @@ use Phucle\Assignment\Commons\Controller;
 class HomeController extends Controller
 {
     public function index() {
-        $name = 'DucTV44';
+        $name = 'Website tin tức';
 
         $this->renderViewClient('home', [
             'name' => $name
