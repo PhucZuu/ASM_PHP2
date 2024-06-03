@@ -2,8 +2,11 @@
     "name": "admin/assignment",
     "autoload": {
         "psr-4": {
-            "Admin\\Assignment\\": "src/"
-        }
+            "Phucle\\Assignment\\": "src/"
+        },
+        "files": [
+            "helper.php"
+        ]
     },
     "require": {
         "bramus/router": "~1.6",
