@@ -6,5 +6,5 @@ use Phucle\Assignment\Commons\Model;
 
 class User extends Model 
 {
-    protected string $tableName;
+    protected string $tableName = 'taikhoan';
 }
