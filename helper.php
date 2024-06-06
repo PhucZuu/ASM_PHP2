@@ -4,7 +4,7 @@ const PATH_ASSET = __DIR__ ."/assets/";
 
 if (!function_exists('show_uploads')) {
     function show_uploads($path) {
-        return $_ENV['BASE_URL']. '/assets/' . $path;
+        return $_ENV['BASE_URL']. 'assets' . $path;
     }
 }
 

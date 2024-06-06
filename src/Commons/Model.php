@@ -33,7 +33,7 @@ class Model
     {
         return $this->queryBuilder
             ->select('*')
-            ->from($this->tableName)
+            ->from($this->tableName)          
             ->orderBy('idNguoiDung	', 'desc')
             ->fetchAllAssociative();
     }
@@ -57,6 +57,7 @@ class Model
             ->from($this->tableName)
             ->setFirstResult($offset)
             ->setMaxResults($perPage)
+            ->where('kichHoat = 1')
             ->orderBy('idNguoiDung	', 'desc')
             ->fetchAllAssociative();
 
@@ -68,16 +69,16 @@ class Model
         return $this->queryBuilder
             ->select('*')
             ->from($this->tableName)
-            ->where('idNguoiDung	 = ?')
+            ->where('idNguoiDung = ?')
             ->setParameter(0, $idNguoiDung)
             ->fetchAssociative();
     }
 
     public function insert(array $data)
     {
+        
         if (!empty($data)) {
             $query = $this->queryBuilder->insert($this->tableName);
-
             $index = 0;
             foreach ($data as $key => $value) {
                 $query->setValue($key, '?')->setParameter($index, $value);
@@ -93,19 +94,37 @@ class Model
         return false;
     }
 
-    public function update($idNguoiDung, $data)
+    public function update($idNguoiDung, array $data)
     {
-        $user = $this->queryBuilder->update($this->tableName);
+        if (!empty($data)) {
+            $query = $this->queryBuilder->update($this->tableName);
+
+            $index = 0;
+
+            foreach ($data as $key => $value) {
+                $query->set($key, '?')->setParameter($index, $value);
+
+                ++$index;
+            }
+
+            $query->where('idNguoiDung = ?')
+                ->setParameter(count($data), $idNguoiDung)
+                ->executeQuery();
+            return true;
+        }
+
+        return false;
     }
 
     public function delete($idNguoiDung)
     {
         return $this->queryBuilder
             ->delete($this->tableName)
-            ->where('idNguoiDung	 = ?')
+            ->where('idNguoiDung = ?')
             ->setParameter(0, $idNguoiDung)
             ->executeQuery();
     }
+
 
     public function __destruct()
     {

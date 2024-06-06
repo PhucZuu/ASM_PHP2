@@ -1,7 +1,7 @@
 @extends('layouts.master')
 
 @section('title')
-    Danh sách User
+    Danh sách User đã xóa
 @endsection
 
 @section('content')
@@ -11,7 +11,7 @@
                 <div class="white_card_header">
                     <div class="box_header m-0">
                         <div class="main-title">
-                            <h1 class="m-0">Danh sách User</h1>
+                            <h1 class="m-0">Danh sách User đã xóa</h1>
                         </div>
                     </div>
                 </div>
@@ -67,27 +67,18 @@
                                             ?>
                                         </td>
                                         <td>
-
-                                            <form action="{{ url('admin/users/' . $user['idNguoiDung'] . '/show') }}"
-                                                method="GET">
-                                                <button class="btn btn-info" type="submit">Xem</button>
+                                            <form
+                                                action="{{ url('admin/users/' . $user['idNguoiDung'] . '/update_restore') }}" method="POST">
+                                                <button class="btn btn-success" type="submit"
+                                                    onclick="return confirm('Chắc chắn muốn khôi phục?')">Khôi phục</button>
                                             </form>
 
-                                            <form action="{{ url('admin/users/' . $user['idNguoiDung'] . '/edit') }}"
-                                                method="GET">
-                                                <button class="btn btn-warning" type="submit">Sửa</button>
-                                            </form>
-                 
-                                            <form action="{{ url('admin/users/' . $user['idNguoiDung'] . '/delete') }}"
-                                                method="POST">
-                                                <button class="btn btn-danger" type="submit"
-                                                    onclick="return confirm('Chắc chắn muốn xóa?')">Xóa</button>
-                                            </form>
+
 
                                         </td>
                                     </tr>
                                 @endforeach
-                                <a class="mb-3" href="{{ url('admin/users/restore') }}">Xem mục đã xóa</a>
+                                <a href="{{ url('admin/users') }}">Quay lại</a>
                             </tbody>
                         </table>
                     </div>

@@ -18,27 +18,86 @@ class NewsController extends Controller
 
     public function index()
     {
-        echo __CLASS__ . "@" . __FUNCTION__;
+        [$news, $totalPage] = $this->news->paginate($_GET['page'] ?? 1);
+        $this->renderViewAdmin('news.index', [
+            'news' => $news,
+            'totalPage' => $totalPage
+        ]);
     }
 
     public function create()
     {
-        echo __CLASS__ ."@". __FUNCTION__;
+        $lists = $this->news->allDanhMuc();
+        $this->renderViewAdmin('news.create', [
+            'lists' => $lists
+
+        ]);
+
     }
 
     public function store()
     {
-        echo __CLASS__ . "@" . __FUNCTION__;
+        $validator = new Validator();
 
+        $validation = $validator->make($_POST + $_FILES, [
+            'tieuDe' => 'required|max:100',
+            'moTa' => 'required',
+            'noiDung' => 'required',
+            'hinhAnh' => 'uploaded_file:0,2048K,png,jpg,jpeg',
+
+        ]);
+        $validation->validate();
+
+        if ($validation->fails()) {
+            $_SESSION['errors'] = $validation->errors()->firstOfAll();
+            header('Location: ' . url('admin/news/create'));
+            exit;
+
+        } else {
+            $data = [
+                'tieuDe' => $_POST['tieuDe'],
+                'moTa' => $_POST['moTa'],
+                'noiDung' => $_POST['noiDung'],
+                'danhMucId' => $_POST['idDanhMuc'],
+            ];
+
+            if (isset($_FILES['hinhAnh']) && $_FILES['hinhAnh']['size'] > 0) {
+                $form = $_FILES['hinhAnh']['tmp_name'];
+                $to = '/uploads/' . time() . $_FILES['hinhAnh']['name'];
+
+                if (move_uploaded_file($form, PATH_ASSET . $to)) {
+                    $data['hinhAnh'] = $to;
+                } else {
+                    $_SESSION['errors']['avatar'] = 'Upload Không thành công';
+                    header('Location: ' . url('admin/news/create'));
+                    exit;
+                }
+            }
+
+            $this->news->insert($data);
+
+            $_SESSION['status'] = true;
+            $_SESSION['msg'] = 'Thao tác thành công';
+
+            header('Location: ' . url('admin/news'));
+            exit;
+        }
     }
+
     public function show($id)
     {
-        echo __CLASS__ . "@" . __FUNCTION__ . ' - ID = ' . $id;
+        $new = $this->news->findByidTinTuc($id);
+        $this->renderViewAdmin('news.show', [
+            'new' => $new
+        ]);
     }
 
     public function edit($id)
     {
-        echo __CLASS__ . "@" . __FUNCTION__ . ' - ID = ' . $id;
+        $new = $this->news->findByidTinTuc($id);
+        $this->renderViewAdmin('news.edit',[
+            'new' => $new
+        ]);
     }
 
     public function update($id)
@@ -48,7 +107,86 @@ class NewsController extends Controller
 
     public function delete($id)
     {
-        echo __CLASS__ . "@" . __FUNCTION__ . ' - ID = ' . $id;
-        
+        try {
+
+            $user = $this->news->findByidTinTuc($id);
+
+            $this->news->update($id, [
+                'kichHoat' => 0,
+                'trangThaiId' => 0,
+            ]);
+
+            $_SESSION['status'] = true;
+            $_SESSION['msg'] = 'Thao tác thành công!';
+
+        } catch (\Throwable $th) {
+
+            $_SESSION['status'] = false;
+            $_SESSION['msg'] = 'Thao tác KHÔNG thành công!';
+        }
+
+        header('Location: ' . url('admin/news'));
+        exit();
     }
+
+    public function restore()
+    {
+
+        $news = $this->news->restore();
+        $this->renderViewAdmin('news.restore', [
+            'news' => $news
+        ]);
+    }
+
+    public function update_restore($id)
+    {
+        try {
+
+            $user = $this->news->findByidTinTuc($id);
+
+            $this->news->update($id, [
+                'kichHoat' => 1
+            ]);
+
+
+            $_SESSION['status'] = true;
+            $_SESSION['msg'] = 'Thao tác thành công!';
+
+        } catch (\Throwable $th) {
+
+            $_SESSION['status'] = false;
+            $_SESSION['msg'] = 'Thao tác KHÔNG thành công!';
+        }
+
+        header('Location: ' . url('admin/news'));
+        exit();
+    }
+
+    public function delete_new($id)
+    {
+        try {
+
+            $new = $this->news->findByidTinTuc($id);
+
+            $this->news->delete($id);
+
+            if (
+                $new['avata']
+                && file_exists(PATH_ASSET . $new['hinhAnh'])
+            ) {
+                unlink(PATH_ASSET . $new['hinhAnh']);
+            }
+
+            $_SESSION['status'] = true;
+            $_SESSION['msg'] = 'Thao tác thành công!';
+        } catch (\Throwable $th) {
+            $_SESSION['status'] = false;
+            $_SESSION['msg'] = 'Thao tác KHÔNG thành công!';
+        }
+
+
+        header('Location: ' . url('admin/news'));
+        exit();
+    }
+
 }

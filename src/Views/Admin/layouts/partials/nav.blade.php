@@ -11,12 +11,13 @@
                 <div class="icon_menu">
                     <img src="{{ asset('assets/admin/img/menu-icon/dashboard.svg') }}" alt>
                 </div>
-                <span>Dashboard</span>
+               <span>Dashboard</span>
             </a>
             <ul>
-                <li><a class="active" href="index-2.html">Sales</a></li>
-                <li><a href="index_2.html">Default</a></li>
-                <li><a href="index_3.html">Dark Menu</a></li>
+                <li><a href="{{ asset('admin/')}}">Trang chủ</a></li>
+                <li><a class="active" href="{{ asset('admin/users')}}">Quản lý người dùng</a></li>               
+                <li><a href="{{ asset('admin/lists')}}">Quản lý danh mục</a></li>
+                <li><a href="{{ asset('admin/news')}}">Quản lý bài viết</a></li>
             </ul>
         </li>
 

@@ -31,11 +31,15 @@ class UserController extends Controller
         $this->renderViewAdmin('users.create');
     }
 
-    public function store()
+    public function restore()
     {
-        echo __CLASS__ . "@" . __FUNCTION__;
+        $users = $this->user->restore();
 
+        $this->renderViewAdmin('users.restore',[
+            'users' => $users
+        ]);
     }
+
     public function show($idNguoiDung)
     {
         $user = $this->user->findByidNguoiDung($idNguoiDung);
@@ -56,17 +60,15 @@ class UserController extends Controller
 
     public function update($idNguoiDung)
     {
-        $user = $this->user->findByidNguoiDung($idNguoiDung);
-       
-        $data = [
-            
-            'vaiTro' => $_POST['vaiTro'],
-            'kichHoat' => $_POST['kichHoat']
-        ];
- 
-        $this->user->update($idNguoiDung, $data);
+        $this->user->findByidNguoiDung($idNguoiDung);
 
-        // Đặt thông báo phiên
+
+        $this->user->update($idNguoiDung, [
+            'vaiTro' => $_POST['vaiTro'],
+            
+        ]);
+
+
         $_SESSION['status'] = true;
         $_SESSION['msg'] = 'Thao tác thành công';
 
@@ -82,8 +84,31 @@ class UserController extends Controller
 
             $user = $this->user->findByidNguoiDung($idNguoiDung);
 
-            $this->user->delete($idNguoiDung);
+            $this->user->update($idNguoiDung, [
+                'kichHoat' => 0
+            ]);
 
+
+            $_SESSION['status'] = true;
+            $_SESSION['msg'] = 'Thao tác thành công!';
+
+        } catch (\Throwable $th) {
+
+            $_SESSION['status'] = false;
+            $_SESSION['msg'] = 'Thao tác KHÔNG thành công!';
+        }
+
+        header('Location: ' . url('admin/users'));
+        exit();
+    }
+
+    public function update_restore($idNguoiDung)
+    {
+        try {
+
+            $this->user->update($idNguoiDung, [
+                'kichHoat' => 1
+            ]);
 
             $_SESSION['status'] = true;
             $_SESSION['msg'] = 'Thao tác thành công!';
