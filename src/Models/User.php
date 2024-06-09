@@ -2,6 +2,7 @@
 
 namespace Phucle\Assignment\Models;
 
+use Phucle\Assignment\Commons\Helper;
 use Phucle\Assignment\Commons\Model;
 
 class User extends Model
@@ -18,4 +19,26 @@ class User extends Model
             ->orderBy('idNguoiDung	', 'desc')
             ->fetchAllAssociative();
     }
+
+    public function findBytenDangNhap($tenDangNhap)
+    {
+        return $this->queryBuilder
+            ->select('*')
+            ->from($this->tableName)
+            ->where('tenDangNhap = ?')
+            ->setParameter(0, $tenDangNhap)
+            ->fetchAssociative();
+
+    }
+
+    public function findByidNguoiDung($id)
+    {
+        return $this->queryBuilder
+            ->select('*')
+            ->from($this->tableName)
+            ->where('idNguoiDung = ?')
+            ->setParameter(0, $id)
+            ->fetchAssociative();
+    }
+
 }

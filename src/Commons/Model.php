@@ -46,7 +46,7 @@ class Model
             ->fetchOne();
     }
 
-    public function paginate($page = 1, $perPage = 5)
+    public function paginate($page = 1, $perPage = 3)
     {
         $totalPage = ceil($this->count() / $perPage);
 

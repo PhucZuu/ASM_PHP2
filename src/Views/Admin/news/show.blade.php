@@ -46,24 +46,33 @@
                                 Tạm ẩn
                             @endif
                         @else
-                            {{ $value }}
+                           {!! $value !!}
                         @endif
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
+
     @if ($field == 'trangThaiId = 1')
         <form action="{{ url('admin/news/' . $new['idTinTuc'] . '/none') }}" method="POST">
+            @csrf
             <button class="btn btn-danger" type="submit" onclick="return confirm('Bạn muốn ẩn bài viết này?')">
-                Tạm ẩn</button>
+                Tạm ẩn
+            </button>
         </form>
-    @else
-    <form action="{{ url('admin/news/' . $new['idTinTuc'] . '/none') }}" method="POST">
-        <button class="btn btn-success m-5" type="submit" onclick="return confirm('Bạn muốn hiển thị bài viết này?')">
-            Hiển thị</button>
+    @else 
+        <form action="{{ url('admin/news/' . $new['idTinTuc'] . '/show') }}" method="POST">
+            @csrf
+            <button class="btn btn-success m-5" type="submit"
+                onclick="return confirm('Bạn muốn hiển thị bài viết này?')">
+                Hiển thị
+            </button>
         </form>
+   
     @endif
+
+
 
 </body>
 

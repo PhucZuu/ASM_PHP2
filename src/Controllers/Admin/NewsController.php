@@ -18,10 +18,15 @@ class NewsController extends Controller
 
     public function index()
     {
-        [$news, $totalPage] = $this->news->paginate($_GET['page'] ?? 1);
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $perPage = 5;
+
+       $result = $this->news->paginate($_GET['page'] ?? 1);
         $this->renderViewAdmin('news.index', [
-            'news' => $news,
-            'totalPage' => $totalPage
+            'news' => $result['data'],
+            'totalPage' => $result['totalPage'],
+            'currentPage' => $result['currentPage'],
+            'totalRecords' => $result['totalRecords']
         ]);
     }
 
@@ -95,14 +100,74 @@ class NewsController extends Controller
     public function edit($id)
     {
         $new = $this->news->findByidTinTuc($id);
+        $lists = $this->news->allDanhMuc();
         $this->renderViewAdmin('news.edit',[
-            'new' => $new
+            'new' => $new,
+            'lists' => $lists,
+            'checkDanhMuc' => $new['danhMucId']        
+            
         ]);
     }
 
     public function update($id)
     {
-        echo __CLASS__ . "@" . __FUNCTION__ . ' - ID = ' . $id;
+        $new = $this->news->findByidTinTuc($id);
+        $validator = new Validator();
+
+        $validation = $validator->make($_POST + $_FILES, [
+            'tieuDe' => 'required|max:100',
+            'moTa' => 'required',
+            'noiDung' => 'required',
+            'hinhAnh' => 'uploaded_file:0,2048K,png,jpg,jpeg',
+
+        ]);
+        $validation->validate();
+
+        if ($validation->fails()) {
+            $_SESSION['errors'] = $validation->errors()->firstOfAll();
+            header('Location: ' . url('admin/news/edit'));
+            exit;
+
+        } else {
+            $data = [
+                'tieuDe' => $_POST['tieuDe'],
+                'moTa' => $_POST['moTa'],
+                'noiDung' => $_POST['noiDung'],
+                'danhMucId' => $_POST['danhMucId'],
+            ];
+
+            $flagUpload = false;
+            if (isset($_FILES['hinhAnh']) && $_FILES['hinhAnh']['size'] > 0) {
+                $flagUpload = true;
+
+                $form = $_FILES['hinhAnh']['tmp_name'];
+                $to = '/uploads/' . time() . $_FILES['hinhAnh']['name'];
+
+                if (move_uploaded_file($form, PATH_ASSET . $to)) {
+                    $data['hinhAnh'] = $to;
+                } else {
+                    $_SESSION['errors']['avatar'] = 'Upload Không thành công';
+                    header('Location: ' . url('admin/news/edit'));
+                    exit;
+                }
+            }
+
+            $this->news->update($id, $data);
+
+            if (
+                $flagUpload
+                && $new['hinhAnh']
+                && file_exists(PATH_ASSET . $new['hinhAnh'])
+            ) {
+                unlink(PATH_ASSET . $new['hinhAnh']);
+            }
+
+            $_SESSION['status'] = true;
+            $_SESSION['msg'] = 'Thao tác thành công';
+
+            header('Location: ' . url('admin/news'));
+            exit;
+        }
     }
 
     public function delete($id)

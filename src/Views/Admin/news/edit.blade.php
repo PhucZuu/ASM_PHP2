@@ -70,22 +70,72 @@
                     @endphp
                 @endif
 
-                <form action="{{ url("admin/lists/{$list['idDanhMuc']}/update") }}" enctype="multipart/form-data"
+                <form action="{{ url("admin/news/{$new['idTinTuc']}/update") }}" enctype="multipart/form-data"
                     method="POST">
 
                     <div class="mb-3">
-                        <label for="tenDanhMuc" class="form-label">Tên danh mục:</label>
-                        <input type="text" class="form-control" id="tenDanhMuc"
-                            placeholder="Enter tenDanhMuc" value="{{ $list['tenDanhMuc'] }}" name= "tenDanhMuc">
+                        <label for="idTinTuc" class="form-label">ID</label>
+                        <input readonly type="text" class="form-control" id="idDanhMuc"
+                            placeholder="Enter -AUTO_INCREMENT-" value="{{ $new['idTinTuc'] }}" name= "idDanhMuc">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="moTa" class="form-label">Danh mục:</label>
+                        <select name="danhMucId" id="danhMucId" class="form-select">
+                            <option value="">-None-</option>
+                            @foreach ($lists as $list)
+                                <option value="{{ $list['idDanhMuc'] }}"
+                                    {{ $list['idDanhMuc'] == $checkDanhMuc ? 'selected' : '' }}>
+                                    {{ $list['tenDanhMuc'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tenDanhMuc" class="form-label">Tiêu đề:</label>
+                        <input type="text" class="form-control" id="tenDanhMuc" placeholder="Enter tenDanhMuc"
+                            value="{{ $new['tieuDe'] }}" name= "tieuDe">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="tenDanhMuc" class="form-label">Mô tả:</label>
+                        <input type="text" class="form-control" id="moTa" placeholder="Enter moTa"
+                            value="{{ $new['moTa'] }}" name= "moTa">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="noiDung" class="form-label">Nội dung:</label>
+                        <textarea name="noiDung" id="editor"></textarea>
+                    </div>
+                    <script src="https://cdn.ckeditor.com/ckeditor5/41.4.2/classic/ckeditor.js"></script>
+                    <script>
+                        ClassicEditor
+                            .create(document.querySelector('#editor'))
+                            .then(editor => {
+                                editor.setData(`{{ $new['noiDung'] }}`);
+                            })
+                            .catch(error => {
+                                console.error(error);
+                            });
+                    </script>
+
+                    <div class="mb-3">
+                        <label for="moTa" class="form-label">Hình ảnh:</label>
+                        <img id="hinhAnh" src="{{ show_uploads($new['hinhAnh']) }}" alt=" " width="250px"
+                            height="200px">
+                        <input type="file" class="form-control" id="hinhAnh" name= "hinhAnh"
+                            value="{{ $new['hinhAnh'] }}">
                     </div>
 
 
                     <button type="submit" class="btn btn-primary">Cập nhật</button>
-                    <a href="{{ asset('admin/lists')}}" class="active m-5">Trở về</a>
+                    <a href="{{ asset('admin/lists') }}" class="active m-5">Trở về</a>
                 </form>
             </div>
         </div>
     </div>
+
 </body>
 
 </html>

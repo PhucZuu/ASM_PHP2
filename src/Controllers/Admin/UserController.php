@@ -26,11 +26,6 @@ class UserController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        $this->renderViewAdmin('users.create');
-    }
-
     public function restore()
     {
         $users = $this->user->restore();
@@ -122,5 +117,13 @@ class UserController extends Controller
         header('Location: ' . url('admin/users'));
         exit();
 
+    }
+
+    public function logout()
+    {
+
+        unset($_SESSION['user']);
+        header('Location: ' . url('/'));
+        exit;
     }
 }

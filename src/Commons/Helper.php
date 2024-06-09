@@ -7,7 +7,7 @@ class Helper
     public static function debug($data) {
         echo '<pre>';
 
-        print_r($data);
+        var_dump($data);
 
         die;
     }

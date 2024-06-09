@@ -10204,6 +10204,9 @@ input[type="number"] {
 }
 .pagination-area {
     text-align: center;
+    display: flex;
+
+    
 }
 .pagination a {
     color: #000;
@@ -10214,11 +10217,14 @@ input[type="number"] {
     transition: background-color 0.3s;
     border: 1px solid #eee;
     margin: 0 4px;
+    display: flex;
 }
 .pagination a.active {
     background-color: #c00;
     color: #fff;
     border: 1px solid #c00;
+    display: flex;
+
 }
 .pagination a:hover:not(.active) {
     background-color: #ddd;

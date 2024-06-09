@@ -8,36 +8,56 @@ use Phucle\Assignment\Commons\Model;
 class News extends Model
 {
     protected string $tableName = 'tintuc';
+    public function all($limit = null)
+    {
+        $query = $this->queryBuilder
+            ->select('tt.*, dm.tenDanhMuc', 'tk.tenDangNhap')
+            ->from($this->tableName, 'tt')
+            ->innerJoin('tt', 'danhmuctintuc', 'dm', 'tt.danhMucId = dm.idDanhMuc')
+            ->orderBy('tt.idTinTuc', 'desc');
+
+        if ($limit !== null) {
+            $query->setMaxResults($limit);
+        }
+
+        return $query->executeQuery()->fetchAllAssociative();
+    }
+
 
     public function allDanhMuc()
     {
         return $this->queryBuilder
             ->select('*')
             ->from('danhmuctintuc')
-            ->orderBy('idDanhMuc', 'desc')
             ->fetchAllAssociative();
 
     }
 
-    public function paginate($page = 1, $perPage = 5)
+    public function paginate($page = 1, $perPage = 4)
     {
         $totalPage = ceil($this->count() / $perPage);
 
         $offset = $perPage * ($page - 1);
 
         $data = $this->queryBuilder
-            ->select('*')
+            ->select('DISTINCT tt.*, dmtt.tenDanhMuc', 'tk.tenDangNhap')
             ->from($this->tableName, 'tt')
             ->innerJoin('tt', 'danhmuctintuc', 'dmtt', 'tt.danhMucId = dmtt.idDanhMuc')
+            ->innerJoin('tt', 'taikhoan', 'tk', 'tt.nguoiDungId = tk.idNguoiDung')
+            ->where('tt.kichHoat = 1')
+            ->orderBy('tt.idTinTuc', 'desc')
             ->setFirstResult($offset)
             ->setMaxResults($perPage)
-            ->where('tt.kichHoat = 1')
-            ->andWhere('(tt.trangThaiId = 1 OR tt.trangThaiId = 0)')
-            ->orderBy('tt.idTinTuc', 'desc')
             ->fetchAllAssociative();
 
-        return [$data, $totalPage];
+        return [
+            'data' => $data,
+            'totalPage' => $totalPage,
+            'currentPage' => $page,
+            'totalRecords' => $this->count(),
+        ];
     }
+
 
     public function insert(array $data)
     {
@@ -62,16 +82,23 @@ class News extends Model
 
     public function findByidTinTuc($id)
     {
-        return $this->queryBuilder
-            ->select('*')
-            ->from($this->tableName)
-            ->where('idTinTuc = ?')
+        $data = $this->queryBuilder
+            ->select('tt.*, dmtt.tenDanhMuc', 'tk.tenDangNhap')
+            ->from($this->tableName, 'tt')
+            ->innerJoin('tt', 'danhmuctintuc', 'dmtt', 'tt.danhMucId = dmtt.idDanhMuc')
+            ->innerJoin('tt', 'taikhoan', 'tk', 'tt.nguoiDungId = tk.idNguoiDung')
+            ->where('tt.idTinTuc = ?')
             ->setParameter(0, $id)
             ->fetchAssociative();
+
+
+
+        return $data;
     }
 
     public function update($id, array $data)
     {
+        $danhMucList = $this->allDanhMuc();
         if (!empty($data)) {
             $query = $this->queryBuilder->update($this->tableName);
 
@@ -107,9 +134,27 @@ class News extends Model
             ->select('*')
             ->from($this->tableName, 'tt')
             ->innerJoin('tt', 'danhmuctintuc', 'dmtt', 'tt.danhMucId = dmtt.idDanhMuc')
-            ->where('tt.kichHoat = ?')->setParameter(0, 0)          
+            ->where('tt.kichHoat = ?')->setParameter(0, 0)
             ->orderBy('idTinTuc', 'desc')
             ->fetchAllAssociative();
     }
+
+    public function searchNews($word = "", $id = 0)
+    {
+        $query = $this->queryBuilder;
+
+        if (!empty($word)) {
+            $query->where('tt.tieuDe LIKE :word')
+                ->setParameter('word', '%' . $word . '%');
+        }
+
+        if ($id > 0) {
+            $query->andWhere('tt.idTinTuc = :id')
+                ->setParameter('id', $id);
+        }
+
+        return $query->fetchAllAssociative();
+    }
+
 }
 
