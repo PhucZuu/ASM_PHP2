@@ -10,3 +10,9 @@
 		href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,500;0,700;1,300;1,500&amp;family=Poppins:ital,wght@0,300;0,500;0,700;1,300;1,400&amp;display=swap"
 		rel="stylesheet">
 	<link href="{{ asset('assets/client/css/styles3875.css?1fcca2a2c42e9d47a3eb')}}" rel="stylesheet">
+
+	 <!-- Latest compiled and minified CSS -->
+	 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+	 <!-- Latest compiled JavaScript -->
+	 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

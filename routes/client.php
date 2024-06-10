@@ -15,8 +15,10 @@ $router->post('/login-handle',          Login_registerController::class .  '@log
 $router->get( '/logout',                Login_registerController::class .  '@logout');
 
 $router->get('/{id}/newDetail',         HomeController::class . '@newDetail');
+$router->get('/{id}/loadList',          HomeController::class . '@loadList');
 $router->post('/search',                HomeController::class . '@searchNews');
-$router->get('/editUse',                UserController::class . '@edit');
+
+$router->get('/{id}/editUse',           UserController::class . '@edit');
 $router->post('/{id}/update',           UserController::class . '@update');
 
 

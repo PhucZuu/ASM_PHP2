@@ -87,7 +87,7 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-left">
                                 @foreach ($lists as $list)
-                                    <li><a class='dropdown-item' href=''>{{ $list['tenDanhMuc'] }}</a>
+                                    <li><a class='dropdown-item' href="{{url($list['tenDanhMuc'] .'/loadList')}}">{{ $list['tenDanhMuc'] }}</a>
                                     </li>
                                 @endforeach
                             </ul>
@@ -95,14 +95,14 @@
 
                     </ul>
                     </li>
-                    <li class="nav-item"><a class='nav-link' href='contact.html'> contact </a></li>
+
                     </ul>
 
 
                     <!-- Search bar.// -->
                     <ul class="navbar-nav ">
                         <li class="nav-item search hidden-xs hidden-sm ">
-                             <a class="nav-link" href="#">
+                            <a class="nav-link" href="#">
                                 <i class="fa fa-search"></i>
                             </a>
                         </li>
@@ -111,7 +111,7 @@
                     <div class="top-search navigation-shadow">
                         <div class="container">
                             <div class="input-group ">
-                                <form action="{{url('search')}}" method="POST">
+                                <form action="{{ url('search') }}" method="POST">
 
                                     <div class="row no-gutters mt-3">
                                         <div class="col">

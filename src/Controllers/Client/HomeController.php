@@ -19,16 +19,21 @@ class HomeController extends Controller
 
     public function home()
     {
-        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-        $perPage = 3; // Or any desired number of products per page
-
+       
+        $top = new News();
+        $top5News = $top->top5();
+   
         $lists = $this->news->allDanhMuc();
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $perPage = 3;
 
         $result = $this->news->paginate($_GET['page'] ?? 1);
+
 
         $this->renderViewClient('home', [
             'news' => $result['data'],
             'lists' => $lists,
+            'top5News' => $top5News,
             'totalPage' => $result['totalPage'],
             'currentPage' => $result['currentPage'],
             'totalRecords' => $result['totalRecords']
@@ -36,14 +41,34 @@ class HomeController extends Controller
         ]);
     }
 
+    public function loadList($tenDanhMuc)
+    {     
+        $top = new News();
+        $top5News = $top->top5();
+
+        $lists = $this->news->allDanhMuc();
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $perPage = 4;
+
+        $result = $this->news->loadNewsTheoDanhMuc($tenDanhMuc, $page, $perPage);
+
+        $this->renderViewClient('home', [
+            'news' => $result['data'],
+            'lists' => $lists,
+            'totalPage' => $result['totalPage'],
+            'currentPage' => $result['currentPage'],
+            'totalRecords' => $result['totalRecords'],
+            'top5News' => $top5News
+           
+
+        ]);
+    }
+
     public function newDetail($id)
     {
         $lists = $this->news->allDanhMuc();
-
-
-
         $new = $this->news->findByidTinTuc($id);
-
+        $views = $this->news->incViews($id);
         $this->renderViewClient('newDetail', [
 
             'new' => $new,
@@ -54,22 +79,16 @@ class HomeController extends Controller
 
     public function searchNews()
     {
-        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
-        $perPage = 3; // Or any desired number of products per page
-        $result = $this->news->paginate($_GET['page'] ?? 1, 9);
-
-        $word = isset($_POST['word']) ? $_POST['word'] : "";
-        $id = isset($_POST['id']) ? (int) $_POST['id'] : 0;
-
         $lists = $this->news->allDanhMuc();
-
-        $newSearch = $this->news->searchNews($word, $id);
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $perPage = 9; // Or any desired number of products per page
+        $word = $_POST['word'] ?? '';
+        $result = $this->news->paginateSearch($word, $page, $perPage);
 
         $this->renderViewClient('search', [
             'lists' => $lists,
             'news' => $result['data'],
             'word' => $word,
-            'newSearch' => $newSearch,
             'totalPage' => $result['totalPage'],
             'currentPage' => $result['currentPage'],
             'totalRecords' => $result['totalRecords']

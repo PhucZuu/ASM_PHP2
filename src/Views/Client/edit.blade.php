@@ -49,27 +49,27 @@
                             @endif
 
                             </header>
-                            <form action="{{  url("{$user['id']}/update") }}" method="POST" style="display:inline-block;">
+                            <form action="{{url("{$user['idNguoiDung']}/update")}}" method="POST" style="display:inline-block">
                                 <div class="form-row">
 
                                 </div> <!-- form-row end.// -->
 
                                 <div class="form-group">
                                     <label>Hình ảnh</label>
-                                    <img src="{{ asset($user['avatar']) }}" alt="" width="100px">
+                                    <img src="{{ $_SESSION['user']['hinhAnh'] }}" alt="" width="100px">
                                     <input type="file" class="form-control" id="email" placeholder="Enter email" name="hinhAnh">
                                     
                                 </div> <!-- form-group end.// -->
 
                                 <div class="form-group">
                                     <label>Email</label>
-                                    <input type="email" class="form-control" id="email" placeholder="Enter email" value="{{ $user['email'] }}" name="email">
+                                    <input type="email" class="form-control" id="email" placeholder="Enter email" value="{{ $_SESSION['user']['email'] }}" name="email">
                                     
                                 </div> <!-- form-group end.// -->
 
                                 <div class="form-group">
                                     <label>Số điện thoại</label>
-                                    <input type="text" class="form-control" id="email" placeholder="Enter email" value="{{ $user['soDienThoai'] }}" name="soDienThoai">
+                                    <input type="text" class="form-control" id="email" placeholder="Enter phone number" value="{{ $_SESSION['user']['soDienThoai'] }}" name="soDienThoai">
                                     
                                 </div> <!-- form-group end.// -->
 

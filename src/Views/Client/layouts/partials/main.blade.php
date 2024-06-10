@@ -234,7 +234,7 @@
                                                     <div class="card__post__title">
                                                         <!-- tiêu đề -->
                                                         <h5>
-                                                            <a href="#">
+                                                            <a href="{{ url($new['idTinTuc'] . '/newDetail') }}">
                                                                 {{ $new['moTa'] }}
                                                             </a>
                                                         </h5>
@@ -260,29 +260,29 @@
 
                 <div class="col-md-12 col-lg-4">
                     <aside class="wrapper__list__article">
-                        <h4 class="border_section">popular post</h4>
+                        <h4 class="border_section">Bài viết views cao nhất</h4>
                         <div class="wrapper__list-number">
-
-                            <!-- List Article -->
+                            @foreach ($top5News as $news)
+                                 <!-- List Article -->
                             <div class="card__post__list">
                                 <!-- STT -->
                                 <div class="list-number">
                                     <span>
-                                        1
+                                       {{ $news['idTinTuc'] }}
                                     </span>
                                 </div>
 
                                 <!-- Danh mục -->
-                                <a href="#" class="category">
-                                    covid-19
+                                <a href="" class="category">
+                                    {{ $news['tenDanhMuc'] }}
                                 </a>
+                                
                                 <ul class="list-inline">
                                     <li class="list-inline-item">
                                         <!-- Tiêu đề -->
                                         <h5>
-                                            <a href="#">
-                                                Gegera Corona, Kekayaan Bos Zoom Nambah Rp 64 T dalam 3 Bulan - CNBC
-                                                Indonesia
+                                            <a href="{{url($news['idTinTuc'] . '/newDetail')}}">
+                                                {{ $news['tieuDe'] }}
 
                                             </a>
                                         </h5>
@@ -290,7 +290,8 @@
                                 </ul>
 
                             </div>
-
+                            @endforeach
+                           
                         </div>
                     </aside>
                 </div>
@@ -302,7 +303,7 @@
     <!-- End Popular news category -->
 
     {{-- Phân trang --}}
-    <div class="col-12 text-center mt-5 flex">
+    <div class="col-12 text-center mt-5 pagination-area">
         <ul class="pagination justify-content-center">
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center pagination-lg">
@@ -343,16 +344,13 @@
                         </li>
                     @endif
 
-                    {{-- Nút đến trang cuối --}}
-                    <li class="page-item {{ $currentPage == $totalPage ? 'disabled' : '' }}">
-                        <a class="page-link" href="?page={{ $totalPage }}" aria-label="Last">
-                            <span aria-hidden="true">&raquo;&raquo;</span>
-                        </a>
-                    </li>
+                    
                 </ul>
             </nav>
         </ul>
     </div>
+
+
 
 </section>
 <!-- End Popular news category -->
